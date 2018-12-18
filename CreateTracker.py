@@ -31,12 +31,12 @@ try:
                 if datetime.strptime(x['finish_date_string'] or "01-01-18", "%m-%d-%y") > START_2018:
                     fileWriter.write(str(x['anime_title']))
                     fileWriter.write(' #' + str(x['anime_id']) + ' DONE!\n')
-                #Only print out what's still being watched in that case    
+                #Only print out what's still being watched in that case
                 elif x['status'] == 1:
                     fileWriter.write(str(x['anime_title']))
                     fileWriter.write(' #' + str(x['anime_id']) + ' ' + str(x['num_watched_episodes']) + '/' + str(x['anime_num_episodes']) + '\n')
                     epsLeft += (x['anime_num_episodes'] - x['num_watched_episodes'])
-                
+
         fileWriter.write('\nEpisodes left ' + str(epsLeft))
 except Exception as e:
     print('Something went wrong printing: ')
