@@ -1,22 +1,30 @@
 import requests
 import json
-from bs4 import BeautifulSoup
 from datetime import datetime
 
 #We could also check that the year isn't 18 but whatever
 START_2018 = datetime(2018, 1, 1)
 
-#This is all anime instead of just currently watching so I can see what I finished for this
-r = requests.get('https://myanimelist.net/animelist/erg')
-soup = BeautifulSoup(r.text, 'html.parser')
+def get_everything(username = 'erg'):
+    #maybe I'll make this more generic if other people care about this stuff
+    CHUNKSIZE = 300
+    end = False
+    offset = 0
+    everything = []
+    
+    while True:
+        chunk = requests.get(f'https://myanimelist.net/animelist/{username}/load.json?offset={offset}').json()
+        if not chunk:
+            break
+        everything.extend(chunk)
+        #chunks come in 300s
+        offset+=CHUNKSIZE
+        
+    print(len(everything))
+    return everything 
 
-#idk if there will ever be more than 1 table that comes back for this
-tables = soup.find_all('table', 'list-table')
-
-#the list of everything that I'm watching/watched. json.loads makes it into a list
-items = tables[0]['data-items']
-jsonItems = json.loads(items)
-
+jsonItems = get_everything()
+print(len(jsonItems))
 #aggregator
 epsLeft = 0
 errorTitle = ''
